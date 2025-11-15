@@ -1,7 +1,7 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box, Drawer, IconButton } from "@mui/material";
 import { useNavigate,useLocation  } from "react-router-dom";
-import { PersonAdd, LocalHospital, MedicalServices, Menu } from "@mui/icons-material"; // Import MUI icons
+import { PersonAdd, LocalHospital, Menu } from "@mui/icons-material"; // Import MUI icons
 import { useState } from "react";
 import back from "../assets/back.jpg"; // Adjust path if needed
 
@@ -27,10 +27,7 @@ const AdminHomePage = ({children}) => {
     navigate("/add-patient");
   };
 
-  // Function to navigate to Add Specialization page
-  const navigateToAddSpecialization = () => {
-    navigate("/add-specialization");
-  };
+  // Add Specialization removed from admin UI
 
   // Handle opening/closing of the drawer
   const toggleDrawer = () => {
@@ -79,10 +76,7 @@ const AdminHomePage = ({children}) => {
               <LocalHospital sx={{ mr: 1 }} />
               Add Patient
             </Button>
-            <Button color="inherit" onClick={navigateToAddSpecialization}>
-              <MedicalServices sx={{ mr: 1 }} />
-              Add Specialization
-            </Button>
+            {/* Add Specialization button removed */}
             <Button color="inherit" onClick={handleLogout}>
               Log Out
             </Button>
@@ -101,10 +95,7 @@ const AdminHomePage = ({children}) => {
             <LocalHospital sx={{ mr: 1 }} />
             Add Patient
           </Button>
-          <Button fullWidth onClick={navigateToAddSpecialization}>
-            <MedicalServices sx={{ mr: 1 }} />
-            Add Specialization
-          </Button>
+          {/* Add Specialization button removed from drawer */}
           <Button fullWidth onClick={handleLogout}>
             Log Out
           </Button>

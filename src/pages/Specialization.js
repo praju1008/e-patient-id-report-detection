@@ -1,85 +1,64 @@
 // Specialization.js
 import React, { useState, useEffect } from "react";
-import { TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Paper, Typography } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Paper, Typography } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material"; 
 import axios from "axios"; // For making HTTP requests
 import AdminHomePage from "./AdminHomePage"; // Import AdminHomePage
 
 const Specialization = () => {
   const [specializations, setSpecializations] = useState([]);
-  const [newSpecialization, setNewSpecialization] = useState("");
   const [error, setError] = useState("");
 
+  const fetchSpecializations = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/specializations");
+      setSpecializations(response.data || []);
+    } catch (err) {
+      console.error("Error fetching specializations:", err);
+      setError("Failed to load specializations.");
+    }
+  };
+
   useEffect(() => {
-    axios.get("http://localhost:5000/api/specializations")
-      .then((response) => setSpecializations(response.data))
-      .catch((err) => console.error("Error fetching specializations:", err));
+    fetchSpecializations();
   }, []);
 
-  const handleAddSpecialization = () => {
-    if (!newSpecialization) {
-      setError("Specialization name cannot be empty.");
-      return;
+  // creation handled elsewhere; input removed from UI
+
+  const handleDeleteSpecialization = async (id) => {
+    const ok = window.confirm("Delete this specialization?");
+    if (!ok) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/specializations/${id}`);
+      alert("Specialization deleted successfully!");
+      await fetchSpecializations();
+    } catch (err) {
+      console.error("Error deleting specialization:", err);
+      setError("Failed to delete specialization.");
     }
-
-    axios.get(`http://localhost:5000/api/specialization/check/${newSpecialization}`)
-      .then((response) => {
-        if (response.data.exists) {
-          setError("Specialization already exists.");
-        } else {
-          axios.post("http://localhost:5000/api/specialization", { name: newSpecialization })
-            .then(() => {
-              setNewSpecialization(""); 
-              setError("");
-              alert("Specialization added successfully!");
-
-              axios.get("http://localhost:5000/api/specializations")
-                .then((response) => setSpecializations(response.data));
-            })
-            .catch((err) => console.error("Error adding specialization:", err));
-        }
-      })
-      .catch((err) => console.error("Error checking specialization:", err));
   };
 
-  const handleDeleteSpecialization = (id) => {
-    axios.delete(`http://localhost:5000/api/specialization/${id}`)
-      .then(() => {
-        alert("Specialization deleted successfully!");
-        axios.get("http://localhost:5000/api/specializations")
-          .then((response) => setSpecializations(response.data));
-      })
-      .catch((err) => console.error("Error deleting specialization:", err));
-  };
-
-  const handleEditSpecialization = (id, currentName) => {
+  const handleEditSpecialization = async (id, currentName) => {
     const newName = prompt("Edit Specialization:", currentName);
     if (!newName) return;
+    const name = newName.trim();
+    if (!name) return;
 
-    axios.put(`http://localhost:5000/api/specialization/${id}`, { name: newName })
-      .then(() => {
-        alert("Specialization updated successfully!");
-        axios.get("http://localhost:5000/api/specializations")
-          .then((response) => setSpecializations(response.data));
-      })
-      .catch((err) => console.error("Error updating specialization:", err));
+    try {
+      await axios.put(`http://localhost:5000/api/specializations/${id}`, { name });
+      alert("Specialization updated successfully!");
+      await fetchSpecializations();
+    } catch (err) {
+      console.error("Error updating specialization:", err);
+      setError("Failed to update specialization.");
+    }
   };
+
   return (
     <AdminHomePage>
       <Typography variant="h4" sx={{ fontWeight: "bold", marginBottom: 2 }}>Specializations</Typography>
       {error && <Typography color="error">{error}</Typography>}
-
-      <TextField
-        fullWidth
-        label="New Specialization"
-        variant="outlined"
-        sx={{ mb: 2 }}
-        value={newSpecialization}
-        onChange={(e) => setNewSpecialization(e.target.value)}
-      />
-      <Button variant="contained" color="primary" sx={{ mb: 2 }} onClick={handleAddSpecialization}>
-        Save Specialization
-      </Button>
 
       <TableContainer component={Paper} sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
         <Table sx={{ minWidth: 650 }} aria-label="specializations table">
@@ -90,21 +69,24 @@ const Specialization = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {specializations.map((specialization) => (
-              <TableRow key={specialization.id} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#f4f4f4" } }}>
-                <TableCell component="th" scope="row" sx={{ fontSize: "14px" }}>
-                  {specialization.name}
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton color="primary" onClick={() => handleEditSpecialization(specialization.id, specialization.name)}>
-                    <Edit />
-                  </IconButton>
-                  <IconButton color="error" onClick={() => handleDeleteSpecialization(specialization.id)}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {specializations.map((specialization, idx) => {
+              const id = specialization._id || specialization.id || specialization.ID || idx;
+              return (
+                <TableRow key={id} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#f4f4f4" } }}>
+                  <TableCell component="th" scope="row" sx={{ fontSize: "14px" }}>
+                    {specialization.name}
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton color="primary" onClick={() => handleEditSpecialization(id, specialization.name)}>
+                      <Edit />
+                    </IconButton>
+                    <IconButton color="error" onClick={() => handleDeleteSpecialization(id)}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>

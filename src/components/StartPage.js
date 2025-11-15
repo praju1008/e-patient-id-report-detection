@@ -53,7 +53,7 @@ const StartPage = () => {
 
       <Grid container spacing={4} justifyContent="center">
         {cards.map((card, index) => (
-          <Grid item key={index}>
+          <Grid key={index}>
             <Card
               sx={{
                 width: 250,

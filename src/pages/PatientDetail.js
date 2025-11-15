@@ -57,12 +57,12 @@ useEffect(() => {
       <Typography variant="h5" gutterBottom>Patient Details</Typography>
       <Paper sx={{ p: 2, mb: 4 }}>
         <Grid container spacing={2}>
-          <Grid item xs={6}><strong>Date:</strong> {date}</Grid>
-          <Grid item xs={6}><strong>Patient NO:</strong> {patient_no}</Grid>
-          <Grid item xs={6}><strong>Name:</strong> {patient_name}</Grid>
-          <Grid item xs={6}><strong>Age:</strong> {age}</Grid>
-          <Grid item xs={6}><strong>Gender:</strong> {gender}</Grid>
-          <Grid item xs={6}><strong>Mobile:</strong> {mobile}</Grid>
+          <Grid xs={6}><strong>Date:</strong> {date}</Grid>
+          <Grid xs={6}><strong>Patient NO:</strong> {patient_no}</Grid>
+          <Grid xs={6}><strong>Name:</strong> {patient_name}</Grid>
+          <Grid xs={6}><strong>Age:</strong> {age}</Grid>
+          <Grid xs={6}><strong>Gender:</strong> {gender}</Grid>
+          <Grid xs={6}><strong>Mobile:</strong> {mobile}</Grid>
         </Grid>
       </Paper>
 
@@ -88,27 +88,27 @@ useEffect(() => {
         history.map((record) => (
             <Paper key={record.id} sx={{ p: 2, my: 2 }}>
             <Grid container spacing={1}>
-              <Grid item xs={12}>
+              <Grid xs={12}>
                 <Typography><strong>Date:</strong> {new Date(record.date).toLocaleDateString("en-GB")}</Typography>
               </Grid>
         {/* Doctor Info */}
-  <Grid item xs={12}>
+  <Grid xs={12}>
     <Typography>
       <strong>Doctor:</strong> {record.doctor_name} &nbsp; | &nbsp; 
       <strong>Mobile:</strong> {record.mobile}
     </Typography>
   </Grid>
-              <Grid item xs={2}>
+              <Grid xs={2}>
                 <Typography><strong>Prescription:</strong></Typography>
               </Grid>
-              <Grid item xs={10}>
+              <Grid xs={10}>
                 <Typography sx={{ whiteSpace: 'pre-line' }}>{record.prescription}</Typography>
               </Grid>
         
-              <Grid item xs={2}>
+              <Grid xs={2}>
                 <Typography><strong>Description:</strong></Typography>
               </Grid>
-              <Grid item xs={10}>
+              <Grid xs={10}>
                 <Typography sx={{ whiteSpace: 'pre-line' }}>{record.description}</Typography>
               </Grid>
         
@@ -147,10 +147,10 @@ useEffect(() => {
 
   return (
     <>
-      <Grid item xs={2}>
+      <Grid xs={2}>
         <Typography><strong>Reports:</strong></Typography>
       </Grid>
-      <Grid item xs={10}>
+      <Grid xs={10}>
         {files.map((file, idx) => (
           <Typography key={idx}>
             <a
